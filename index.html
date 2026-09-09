@@ -1,0 +1,755 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CHEAK P | Check Everything That You Have In Your Mind</title>
+    <style>
+        :root {
+            --bg-color: #f8f9fa;
+            --text-color: #1a1a1a;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --primary-btn: #2563eb;
+            --primary-hover: #1d4ed8;
+            --input-bg: #ffffff;
+            --secondary-text: #64748b;
+            
+            --bad-color: #ef4444;
+            --medium-color: #eab308;
+            --good-color: #22c55e;
+            --excellent-color: #0284c7;
+        }
+
+        [data-theme="dark"] {
+            --bg-color: #0f172a;
+            --text-color: #f8fafc;
+            --card-bg: #1e293b;
+            --border-color: #334155;
+            --primary-btn: #3b82f6;
+            --primary-hover: #2563eb;
+            --input-bg: #0f172a;
+            --secondary-text: #94a3b8;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            transition: background-color 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+        }
+
+        body {
+            background-color: var(--bg-color);
+            color: var(--text-color);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 1rem 8%;
+            background-color: var(--card-bg);
+            border-bottom: 1px solid var(--border-color);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            letter-spacing: 2px;
+            color: var(--primary-btn);
+            cursor: pointer;
+        }
+
+        nav {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .nav-link {
+            text-decoration: none;
+            color: var(--secondary-text);
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            color: var(--primary-btn);
+            background-color: rgba(37, 99, 235, 0.08);
+        }
+
+        .theme-switch-wrapper { display: flex; align-items: center; }
+        .theme-switch { display: inline-block; height: 32px; position: relative; width: 60px; }
+        .theme-switch input { display: none; }
+        .slider {
+            background-color: #cbd5e1; bottom: 0; cursor: pointer; left: 0; position: absolute; right: 0; top: 0;
+            transition: .4s; border-radius: 34px; display: flex; align-items: center; justify-content: space-between; padding: 0 6px;
+        }
+        .slider:before {
+            background-color: #ffffff; bottom: 3px; content: ""; height: 26px; left: 3px; position: absolute;
+            transition: transform .4s; width: 26px; border-radius: 50%; z-index: 2; box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+        input:checked + .slider { background-color: #334155; }
+        input:checked + .slider:before { transform: translateX(28px); }
+
+        main {
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 2.5rem 1.5rem;
+            flex: 1;
+        }
+
+        section { display: none; }
+        section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(6px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .slogan { font-size: 0.9rem; font-weight: 700; letter-spacing: 1.5px; color: var(--primary-btn); text-transform: uppercase; text-align: center; margin-bottom: 0.5rem; }
+        h1 { font-size: 2.25rem; text-align: center; margin-bottom: 1rem; line-height: 1.3; }
+        .hero-desc { text-align: center; color: var(--secondary-text); font-size: 1.1rem; max-width: 650px; margin: 0 auto 2rem auto; line-height: 1.6; }
+
+        .cta-group { display: flex; justify-content: center; gap: 1rem; margin-bottom: 3rem; flex-wrap: wrap; }
+
+        .btn {
+            padding: 0.8rem 1.75rem; border: none; border-radius: 8px; font-size: 1rem; font-weight: 600; cursor: pointer;
+            transition: all 0.2s ease; display: inline-flex; align-items: center; gap: 0.5rem;
+        }
+        .btn-primary { background-color: var(--primary-btn); color: #ffffff; }
+        .btn-primary:hover { background-color: var(--primary-hover); }
+        .btn-secondary { background-color: transparent; border: 2px solid var(--border-color); color: var(--text-color); }
+        .btn-secondary:hover { border-color: var(--primary-btn); color: var(--primary-btn); }
+        .btn-back { background: none; border: none; color: var(--secondary-text); cursor: pointer; font-size: 0.95rem; margin-bottom: 1.5rem; }
+
+        textarea, input[type="text"] {
+            width: 100%; padding: 1rem; border-radius: 8px; border: 1px solid var(--border-color);
+            background-color: var(--input-bg); color: var(--text-color); font-size: 1rem; margin-bottom: 1rem; outline: none;
+        }
+        textarea { resize: vertical; min-height: 120px; }
+        textarea:focus, input[type="text"]:focus { border-color: var(--primary-btn); }
+
+        .quality-badge { display: inline-block; padding: 0.4rem 1.25rem; border-radius: 20px; font-weight: 800; font-size: 0.85rem; color: #ffffff; text-transform: uppercase; }
+        .badge-bad { background-color: var(--bad-color); }
+        .badge-medium { background-color: var(--medium-color); color: #000; }
+        .badge-good { background-color: var(--good-color); }
+        .badge-excellent { background-color: var(--excellent-color); }
+        .badge-generated { background-color: var(--primary-btn); }
+
+        #result-box, #generated-box { margin-top: 2rem; background-color: var(--card-bg); border: 1px solid var(--border-color); border-radius: 12px; padding: 1.75rem; }
+
+        .history-topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .history-search {
+            flex: 1;
+            margin-bottom: 0 !important;
+            padding: 0.75rem 1rem !important;
+        }
+
+        .history-list-full {
+            display: flex;
+            flex-direction: column;
+            gap: 1.25rem;
+        }
+
+        .history-card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            padding: 1.5rem;
+            position: relative;
+        }
+
+        .history-card-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .history-timestamp {
+            font-size: 0.85rem;
+            color: var(--secondary-text);
+        }
+
+        .history-field-title {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--secondary-text);
+            text-transform: uppercase;
+            margin-bottom: 0.3rem;
+        }
+
+        .history-prompt-content {
+            background-color: var(--input-bg);
+            border: 1px solid var(--border-color);
+            padding: 1rem;
+            border-radius: 6px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            margin-bottom: 1rem;
+        }
+
+        .history-output-content {
+            color: var(--text-color);
+            line-height: 1.6;
+        }
+
+        .delete-btn {
+            background: none;
+            border: none;
+            color: var(--bad-color);
+            cursor: pointer;
+            font-size: 0.85rem;
+            font-weight: 600;
+        }
+
+        .delete-btn:hover { text-decoration: underline; }
+        .hidden { display: none !important; }
+
+        /* ABOUT US STYLES */
+        .about-container {
+            margin-top: 3.5rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .about-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .about-text {
+            color: var(--secondary-text);
+            line-height: 1.7;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .about-list {
+            list-style-type: disc;
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary-text);
+            line-height: 1.7;
+        }
+
+        .about-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* FAQ STYLES */
+        .faq-container {
+            margin-top: 2rem;
+            background-color: var(--card-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 2rem;
+        }
+
+        .faq-title {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            color: var(--text-color);
+        }
+
+        .faq-item {
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            width: 100%;
+            background-color: var(--input-bg);
+            color: var(--text-color);
+            padding: 1.1rem;
+            font-size: 1rem;
+            border: none;
+            text-align: left;
+            cursor: pointer;
+            font-weight: 600;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.2s ease;
+        }
+
+        .faq-question:hover {
+            background-color: rgba(37, 99, 235, 0.05);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+            background-color: var(--card-bg);
+        }
+
+        .faq-answer p {
+            padding: 1.1rem;
+            margin: 0;
+            color: var(--secondary-text);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .faq-icon {
+            font-size: 1.2rem;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-question.active .faq-icon {
+            transform: rotate(45deg);
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo" onclick="navigateTo('home-section')">CHEAK P</div>
+        <nav>
+            <span class="nav-link active" id="nav-home" onclick="navigateTo('home-section')">Home</span>
+            <span class="nav-link" id="nav-eval" onclick="navigateTo('evaluate-section')">Evaluate</span>
+            <span class="nav-link" id="nav-gen" onclick="navigateTo('generate-section')">Creator</span>
+            <span class="nav-link" id="nav-history" onclick="navigateTo('history-page')">History</span>
+            
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="theme-checkbox">
+                    <input type="checkbox" id="theme-checkbox" />
+                    <div class="slider">
+                        <span style="font-size:12px; z-index:1;">☀️</span>
+                        <span style="font-size:12px; z-index:1;">🌙</span>
+                    </div>
+                </label>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <!-- HOME SECTION -->
+        <section id="home-section" class="active">
+            <div class="slogan">CHECK P</div>
+            <h1>“CHECK EVERYTHING THAT YOU HAVE IN YOUR MIND.”</h1>
+            <p class="hero-desc">
+                Evaluate the quality of your AI commands or write engineered prompts from scratch.
+            </p>
+            <div class="cta-group">
+                <button class="btn btn-primary" onclick="navigateTo('evaluate-section')">Evaluate Prompt</button>
+                <button class="btn btn-secondary" onclick="navigateTo('generate-section')">Create Prompt</button>
+                <button class="btn btn-secondary" onclick="navigateTo('history-page')">View History Page</button>
+            </div>
+
+            <!-- ABOUT US SECTION -->
+            <div class="about-container">
+                <h2 class="about-title">About WEB</h2>
+                <p class="about-text">
+                    Our innovative web platform transforms raw ideas into high-performing, production-ready prompts designed for seamless integration with leading AI models. Serving as a complete prompt-engineering ecosystem, the site features an intelligent Prompt Generator alongside an advanced Prompt Quality Checker.
+                </p>
+                <p class="about-text">
+                    The platform's core strength lies in its dual approach:
+                </p>
+                <ul class="about-list">
+                    <li><strong>Prompt Generator:</strong> Converts simple concepts into structured, context-rich prompts complete with defined roles, formatting rules, task-specific templates, and operational boundaries.</li>
+                    <li><strong>Prompt Quality Checker:</strong> Analyzes prompt structure for clarity, tone, specificity, multi-dimensional scoring, and constraints—highlighting ambiguities and mitigating model hallucinations before execution.</li>
+                </ul>
+                <p class="about-text">
+                    By identifying weak points and refining instruction clarity, the platform eliminates tedious trial-and-error iterations. Users save on API token costs, achieve consistent outputs, and unlock the full potential of language models. Whether you are a developer fine-tuning application inputs, a marketer scaling copy, or an enthusiast exploring prompt engineering, the website provides the essential tools to craft, evaluate, and perfect every instruction effortlessly.
+                </p>
+            </div>
+
+            <!-- FAQ SECTION -->
+            <div class="faq-container">
+                <h2 class="faq-title">Frequently Asked Questions</h2>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>What is CHEAK P?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>CHEAK P is a prompt engineering tool that helps you evaluate the effectiveness of your AI prompts or build structured prompts from scratch for better AI model outputs.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How does Prompt Evaluation work?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>When you submit a prompt in the Evaluate section, CHEAK P analyzes its clarity, context, and structure, assigning a tier (BAD, MEDIUM, GOOD, or EXCELLENT) along with detailed improvement suggestions.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>Is my history saved securely?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Yes, all your past evaluations and generated prompts are stored locally in your browser (LocalStorage). None of your saved data leaves your local device.</p>
+                    </div>
+                </div>
+
+                <div class="faq-item">
+                    <button class="faq-question">
+                        <span>How do I use the Prompt Creator?</span>
+                        <span class="faq-icon">+</span>
+                    </button>
+                    <div class="faq-answer">
+                        <p>Simply describe your idea or end goal in plain english, and the Prompt Creator will generate a structured, highly optimized prompt ready for use in ChatGPT or other AI tools.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- EVALUATE SECTION -->
+        <section id="evaluate-section">
+            <button class="btn-back" onclick="navigateTo('home-section')">← Back to Home</button>
+            <h2>Evaluate Prompt Quality</h2>
+            <p class="hero-desc" style="text-align: left; margin-bottom: 1rem; font-size: 0.95rem;">
+                Enter your prompt to evaluate its clarity and score across bad, medium, good, and excellent tiers.
+            </p>
+            <textarea id="prompt-input" placeholder="Type or paste your prompt here..."></textarea>
+            <button class="btn btn-primary" id="eval-btn" onclick="evaluatePrompt()">Evaluate Prompt</button>
+
+            <div id="result-box" class="hidden">
+                <div id="quality-badge" class="quality-badge">GOOD</div>
+                <h3 style="margin-top:1rem; margin-bottom:0.5rem;">Suggestions & Improvements:</h3>
+                <div id="suggestion-text" style="color: var(--secondary-text); line-height: 1.6; white-space: pre-wrap;"></div>
+            </div>
+        </section>
+
+        <!-- GENERATE SECTION -->
+        <section id="generate-section">
+            <button class="btn-back" onclick="navigateTo('home-section')">← Back to Home</button>
+            <h2>Describe Your Idea</h2>
+            <p class="hero-desc" style="text-align: left; margin-bottom: 1rem; font-size: 0.95rem;">
+                Describe what you want to do and CHEAK P will build an optimal prompt.
+            </p>
+            <textarea id="idea-input" placeholder="e.g., Write an email asking for a raise..."></textarea>
+            <button class="btn btn-primary" id="gen-btn" onclick="generatePrompt()">Craft Prompt</button>
+
+            <div id="generated-box" class="hidden">
+                <h3>Generated Prompt:</h3>
+                <div id="generated-text" style="margin-top: 0.5rem; font-family: monospace; white-space: pre-wrap;"></div>
+            </div>
+        </section>
+
+        <!-- HISTORY PAGE -->
+        <section id="history-page">
+            <div class="history-topbar">
+                <div>
+                    <h2>Project History</h2>
+                    <p style="color: var(--secondary-text); font-size: 0.9rem;">Review all past prompt evaluations and created prompts.</p>
+                </div>
+                <button class="delete-btn" style="font-size: 1rem;" onclick="clearAllHistory()">Clear All History</button>
+            </div>
+
+            <input type="text" id="history-search" class="history-search" placeholder="🔍 Search through past prompts..." oninput="filterHistory()" />
+
+            <div id="full-history-list" class="history-list-full" style="margin-top: 1.5rem;"></div>
+        </section>
+    </main>
+
+    <script>
+        const API_KEY = "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";
+        const MODEL = "openai/gpt-oss-120b";
+        const API_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+        // Theme Toggle
+        const themeCheckbox = document.getElementById('theme-checkbox');
+        if (localStorage.getItem('cheakp_theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+            themeCheckbox.checked = true;
+        }
+
+        themeCheckbox.addEventListener('change', (e) => {
+            const mode = e.target.checked ? 'dark' : 'light';
+            document.documentElement.setAttribute('data-theme', mode);
+            localStorage.setItem('cheakp_theme', mode);
+        });
+
+        // Navigation
+        function navigateTo(sectionId) {
+            document.querySelectorAll('main > section').forEach(sec => sec.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+
+            document.getElementById(sectionId).classList.add('active');
+
+            if (sectionId === 'home-section') document.getElementById('nav-home').classList.add('active');
+            if (sectionId === 'evaluate-section') document.getElementById('nav-eval').classList.add('active');
+            if (sectionId === 'generate-section') document.getElementById('nav-gen').classList.add('active');
+            if (sectionId === 'history-page') {
+                document.getElementById('nav-history').classList.add('active');
+                renderFullHistoryPage();
+            }
+        }
+
+        // FAQ Toggle Logic
+        document.querySelectorAll('.faq-question').forEach((button) => {
+            button.addEventListener('click', () => {
+                const faqAnswer = button.nextElementSibling;
+                const isExpanded = button.classList.contains('active');
+
+                // Close all other active FAQ items
+                document.querySelectorAll('.faq-question').forEach((btn) => {
+                    btn.classList.remove('active');
+                    btn.nextElementSibling.style.maxHeight = null;
+                });
+
+                // Open current item if it wasn't expanded
+                if (!isExpanded) {
+                    button.classList.add('active');
+                    faqAnswer.style.maxHeight = faqAnswer.scrollHeight + "px";
+                }
+            });
+        });
+
+        // Groq API Call
+        async function callGroqApi(messages) {
+            const response = await fetch(API_URL, {
+                method: 'POST',
+                headers: { 'Authorization': `Bearer ${API_KEY}`, 'Content-Type': 'application/json' },
+                body: JSON.stringify({ model: MODEL, messages: messages, temperature: 0.2 })
+            });
+
+            if (!response.ok) {
+                const errData = await response.json().catch(() => ({}));
+                throw new Error(errData.error?.message || "API Connection Error");
+            }
+            const data = await response.json();
+            return data.choices[0].message.content;
+        }
+
+        // Robust JSON Extractor
+        function parseLlmJson(rawText) {
+            try {
+                return JSON.parse(rawText);
+            } catch (e) {
+                const jsonMatch = rawText.match(/\{[\s\S]*\}/);
+                if (jsonMatch) {
+                    try {
+                        return JSON.parse(jsonMatch[0]);
+                    } catch (e2) {}
+                }
+                
+                let level = "MEDIUM";
+                if (rawText.toUpperCase().includes("EXCELLENT")) level = "EXCELLENT";
+                else if (rawText.toUpperCase().includes("GOOD")) level = "GOOD";
+                else if (rawText.toUpperCase().includes("BAD")) level = "BAD";
+
+                return {
+                    level: level,
+                    suggestions: rawText
+                };
+            }
+        }
+
+        // Evaluate Prompt
+        async function evaluatePrompt() {
+            const input = document.getElementById('prompt-input').value.trim();
+            if (!input) return alert("Please enter a prompt to evaluate.");
+
+            const btn = document.getElementById('eval-btn');
+            btn.disabled = true;
+            btn.textContent = "Evaluating...";
+
+            const sysPrompt = `You are an expert prompt engineer. Evaluate the user's prompt thoroughly.
+Assess clarity, context, specificity, and constraints.
+You MUST output ONLY a valid JSON object matching this structure:
+{
+  "level": "BAD|MEDIUM|GOOD|EXCELLENT",
+  "suggestions": "Detailed evaluation and advice on how to improve this prompt."
+}`;
+
+            try {
+                const rawResponse = await callGroqApi([
+                    { role: "system", content: sysPrompt },
+                    { role: "user", content: input }
+                ]);
+
+                const data = parseLlmJson(rawResponse);
+                
+                const validLevels = ["BAD", "MEDIUM", "GOOD", "EXCELLENT"];
+                const finalLevel = validLevels.includes(data.level?.toUpperCase()) ? data.level.toUpperCase() : "MEDIUM";
+                const finalSuggestions = data.suggestions || rawResponse;
+
+                document.getElementById('result-box').classList.remove('hidden');
+                const badge = document.getElementById('quality-badge');
+                badge.className = `quality-badge badge-${finalLevel.toLowerCase()}`;
+                badge.textContent = finalLevel;
+                document.getElementById('suggestion-text').textContent = finalSuggestions;
+
+                saveHistory({
+                    type: 'EVALUATION',
+                    prompt: input,
+                    level: finalLevel,
+                    output: finalSuggestions
+                });
+
+            } catch (err) {
+                alert("Evaluation error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Evaluate Prompt";
+            }
+        }
+
+        // Create Prompt
+        async function generatePrompt() {
+            const idea = document.getElementById('idea-input').value.trim();
+            if (!idea) return alert("Please describe your idea.");
+
+            const btn = document.getElementById('gen-btn');
+            btn.disabled = true;
+            btn.textContent = "Crafting...";
+
+            const sysPrompt = "You are a master prompt engineer. Craft a highly effective, clear, detailed prompt based on the user's requirement. Return ONLY the final structured prompt.";
+
+            try {
+                const res = await callGroqApi([
+                    { role: "system", content: sysPrompt },
+                    { role: "user", content: idea }
+                ]);
+
+                document.getElementById('generated-box').classList.remove('hidden');
+                document.getElementById('generated-text').textContent = res;
+
+                saveHistory({
+                    type: 'CREATOR',
+                    prompt: idea,
+                    level: 'CREATED',
+                    output: res
+                });
+
+            } catch (err) {
+                alert("Generation error: " + err.message);
+            } finally {
+                btn.disabled = false;
+                btn.textContent = "Craft Prompt";
+            }
+        }
+
+        // Local Storage History Management
+        function saveHistory(entry) {
+            try {
+                const history = JSON.parse(localStorage.getItem('cheakp_history')) || [];
+                entry.id = Date.now();
+                entry.date = new Date().toLocaleString();
+                history.unshift(entry);
+                localStorage.setItem('cheakp_history', JSON.stringify(history));
+            } catch (e) {
+                console.warn("Could not access localStorage:", e);
+            }
+        }
+
+        function getHistory() {
+            try {
+                return JSON.parse(localStorage.getItem('cheakp_history')) || [];
+            } catch (e) {
+                return [];
+            }
+        }
+
+        function renderFullHistoryPage(filterText = "") {
+            const listContainer = document.getElementById('full-history-list');
+            const history = getHistory();
+
+            const filtered = history.filter(item => 
+                (item.prompt && item.prompt.toLowerCase().includes(filterText.toLowerCase())) || 
+                (item.output && item.output.toLowerCase().includes(filterText.toLowerCase()))
+            );
+
+            if (filtered.length === 0) {
+                listContainer.innerHTML = `<div style="text-align:center; padding: 3rem; color: var(--secondary-text);">No history records found.</div>`;
+                return;
+            }
+
+            listContainer.innerHTML = filtered.map(item => {
+                let badgeClass = 'badge-good';
+                const lvl = (item.level || '').toLowerCase();
+                if (lvl === 'bad') badgeClass = 'badge-bad';
+                if (lvl === 'medium') badgeClass = 'badge-medium';
+                if (lvl === 'excellent') badgeClass = 'badge-excellent';
+                if (lvl === 'created') badgeClass = 'badge-generated';
+
+                return `
+                    <div class="history-card">
+                        <div class="history-card-header">
+                            <div>
+                                <span class="quality-badge ${badgeClass}">${escapeHtml(item.level)}</span>
+                                <span style="font-size: 0.75rem; color: var(--secondary-text); margin-left: 0.5rem;">[${escapeHtml(item.type)}]</span>
+                            </div>
+                            <span class="history-timestamp">${escapeHtml(item.date)}</span>
+                        </div>
+                        <div class="history-field-title">Submitted Input:</div>
+                        <div class="history-prompt-content">${escapeHtml(item.prompt)}</div>
+                        <div class="history-field-title">Response / Feedback:</div>
+                        <div class="history-output-content">${escapeHtml(item.output)}</div>
+                        <div style="text-align: right; margin-top: 1rem;">
+                            <button class="delete-btn" onclick="deleteHistoryItem(${item.id})">Remove Entry</button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function filterHistory() {
+            const query = document.getElementById('history-search').value;
+            renderFullHistoryPage(query);
+        }
+
+        function deleteHistoryItem(id) {
+            let history = getHistory();
+            history = history.filter(item => item.id !== id);
+            try {
+                localStorage.setItem('cheakp_history', JSON.stringify(history));
+            } catch(e) {}
+            renderFullHistoryPage(document.getElementById('history-search').value);
+        }
+
+        function clearAllHistory() {
+            if (confirm("Are you sure you want to permanently clear your history page?")) {
+                try {
+                    localStorage.removeItem('cheakp_history');
+                } catch(e) {}
+                renderFullHistoryPage();
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return '';
+            const d = document.createElement('div');
+            d.textContent = str;
+            return d.innerHTML;
+        }
+    </script>
+</body>
+</html>
